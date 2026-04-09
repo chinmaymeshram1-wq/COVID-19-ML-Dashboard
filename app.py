@@ -24,7 +24,7 @@ st.set_page_config(page_title="COVID-19 ML Dashboard", layout="wide", page_icon=
 
 # --- PREMIUM DARK MODE STYLE FOR MATPLOTLIB/SEABORN ---
 plt.style.use('dark_background')
-sns.set_theme(style="darkgrid", rc={"axes.facecolor": "#121212", "figure.facecolor": "transparent", "axes.grid": False, "text.color": "white", "axes.labelcolor": "white", "xtick.color": "white", "ytick.color": "white"})
+sns.set_theme(style="darkgrid", rc={"axes.facecolor": "#121212", "figure.facecolor": "none", "axes.grid": False, "text.color": "white", "axes.labelcolor": "white", "xtick.color": "white", "ytick.color": "white"})
 
 # --- CUSTOM CSS (ANIMATIONS & GLASSMORPHISM) ---
 st.markdown("""
