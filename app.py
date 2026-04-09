@@ -103,7 +103,7 @@ st.markdown("""
         color: #4facfe;
         font-weight: 600;
         transition: all 0.3s ease;
-        display: inline-block;
+        display: block;
     }
     
     a:hover {
@@ -272,7 +272,7 @@ with st.expander("Expand System 1: Exploratory Data Analysis", expanded=True):
     X_pca_2d = pca.fit_transform(X_scaled)
 
     fig_pca, ax_pca = plt.subplots(figsize=(10, 6))
-    sns.scatterplot(x=X_pca_2d[:, 0], y=X_pca_2d[:, 1], hue=df['WHO Region'], palette='Set2', s=120, alpha=0.9, edgecolor='w', linewidth="0.5", ax=ax_pca)
+    sns.scatterplot(x=X_pca_2d[:, 0], y=X_pca_2d[:, 1], hue=df['WHO Region'], palette='Set2', s=120, alpha=0.9, edgecolor='w', linewidth=0.5, ax=ax_pca)
     ax_pca.set_title("PCA 2D Visualization by WHO Region", color="white", size=14)
     ax_pca.set_xlabel("Principal Component 1")
     ax_pca.set_ylabel("Principal Component 2")
