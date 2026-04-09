@@ -22,21 +22,146 @@ warnings.filterwarnings('ignore')
 # --- CONFIGURATION ---
 st.set_page_config(page_title="COVID-19 ML Dashboard", layout="wide", page_icon="🦠")
 
-# --- CUSTOM CSS ---
+# --- PREMIUM DARK MODE STYLE FOR MATPLOTLIB/SEABORN ---
+plt.style.use('dark_background')
+sns.set_theme(style="darkgrid", rc={"axes.facecolor": "#121212", "figure.facecolor": "transparent", "axes.grid": False, "text.color": "white", "axes.labelcolor": "white", "xtick.color": "white", "ytick.color": "white"})
+
+# --- CUSTOM CSS (ANIMATIONS & GLASSMORPHISM) ---
 st.markdown("""
     <style>
-    .main-title {
-        font-size: 3rem;
-        color: #2E86C1;
-        text-align: center;
-        font-family: 'Arial Black', sans-serif;
-        margin-bottom: 2rem;
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    
+    * {
+        font-family: 'Outfit', sans-serif !important;
     }
+
+    /* Animated Dynamic Gradient Background */
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+    
+    .stApp {
+        background: linear-gradient(-45deg, #091221, #0f2027, #203a43, #152836);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        color: #e0e0e0;
+    }
+    
+    /* Main Title Styling */
+    .main-title {
+        font-size: 3.8rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 2rem;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.6);
+        background: -webkit-linear-gradient(45deg, #4facfe, #00f2fe, #f093fb, #f5576c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: fadeInDown 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        padding: 20px 0;
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Glassmorphism Info Box */
     .info-box {
-        background-color: #F8F9F9;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #2E86C1;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 25px;
+        border-radius: 16px;
+        border-left: 6px solid #00f2fe;
+        color: #ffffff;
+        font-size: 1.1rem;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .info-box:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 15px 30px rgba(0, 242, 254, 0.15);
+        border-left: 6px solid #f093fb;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Sidebar Glassmorphism */
+    [data-testid="stSidebar"] {
+        background: rgba(10, 15, 30, 0.6) !important;
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Auto-scroll links */
+    a {
+        text-decoration: none;
+        color: #4facfe;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    a:hover {
+        color: #f093fb;
+        transform: translateX(5px);
+    }
+
+    /* Metric Cards Styling */
+    [data-testid="stMetricValue"] {
+        color: #00f2fe !important;
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        animation: pulse 2s infinite alternate;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: #a0aec0 !important;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    @keyframes pulse {
+        from { text-shadow: 0 0 10px rgba(0,242,254,0.2); }
+        to { text-shadow: 0 0 20px rgba(0,242,254,0.6), 0 0 30px rgba(0,242,254,0.4); }
+    }
+
+    /* Streamlit Expander overrides & animations */
+    .streamlit-expanderHeader {
+        font-size: 1.4rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border-radius: 12px !important;
+        transition: background 0.3s ease !important;
+    }
+    .streamlit-expanderHeader:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #00f2fe !important;
+    }
+    
+    /* General element entrance animation */
+    .element-container {
+        animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dataframe wrapper styling */
+    .stDataFrame {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -60,44 +185,51 @@ if df.empty:
 st.markdown("<div class='main-title'>COVID-19 Comprehensive Machine Learning Analysis</div>", unsafe_allow_html=True)
 
 
-# --- DATASET OVERVIEW ---
-with st.expander("📊 Dataset Overview (Click to Expand)", expanded=False):
-    st.markdown("### Basic Dataset Information")
+# --- SIDEBAR NAVIGATION (Anchor Links) ---
+st.sidebar.markdown("### 🧭 Navigation & Access")
+st.sidebar.markdown("""
+<div class='info-box' style='padding:15px; font-size:0.9rem;'>
+✨ <b>Tip:</b> Click on any section below to smoothly auto-navigate directly to the expanded data analysis.
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("""
+- [📊 Dataset Overview](#dataset-overview)
+- [📈 1. COVID Trend Analysis Dashboard](#sys1)
+- [🚦 2. Severity Prediction](#sys2)
+- [📉 3. Death Rate Prediction](#sys3)
+- [🌍 4. WHO Region Classification](#sys4)
+- [🏆 5. Final Model Comparison](#sys5)
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("<br><br><br><br><hr>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='text-align:center; color:#666; font-size:0.8rem;'>Analysis Engine Active<br>v2.0 Premium Edition</div>", unsafe_allow_html=True)
+
+# ==============================================================================
+# DATASET OVERVIEW (ALWAYS ACTIVE & EXPANDED)
+# ==============================================================================
+st.header("📊 Dataset Overview", anchor="dataset-overview")
+with st.expander("Explore the Raw Dataset & Statistics", expanded=True):
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total Countries/Regions", df.shape[0])
-    col2.metric("Total Features (Columns)", df.shape[1])
-    col3.metric("Total Confirmed Cases (Global)", f"{df['Confirmed'].sum():,}")
-    
-    st.markdown("#### Head (First 5 Rows)")
-    st.dataframe(df.head())
-    
-    st.markdown("#### Tail (Last 5 Rows)")
-    st.dataframe(df.tail())
-    
-    st.markdown("#### Statistical Description")
-    st.dataframe(df.describe())
-    
-    st.markdown("#### Missing Values")
-    missing_data = df.isnull().sum()
-    if missing_data.sum() == 0:
-        st.success("No missing values found in the dataset! Perfect!")
-    else:
-        st.write(missing_data[missing_data > 0])
+    col1.metric("🌍 Total Countries/Regions", df.shape[0])
+    col2.metric("🔢 Total Features", df.shape[1])
+    col3.metric("🦠 Total Global Cases", f"{df['Confirmed'].sum():,}")
 
+    st.markdown("#### The Data (Snapshot)")
+    st.dataframe(df.head(10), use_container_width=True)
 
-# --- SIDEBAR NAVIGATION ---
-st.sidebar.header("Navigation")
-st.sidebar.markdown("Explore the 5 different Machine Learning analytical systems developed for this project:")
-selected_option = st.sidebar.radio(
-    "Choose a System:",
-    [
-        "1. COVID Trend Analysis Dashboard",
-        "2. Severity Prediction (Classification)",
-        "3. Death Rate Prediction (Regression)",
-        "4. WHO Region Classification",
-        "5. Final Model Comparison"
-    ]
-)
+    colA, colB = st.columns(2)
+    with colA:
+        st.markdown("#### Feature Statistics")
+        st.dataframe(df.describe(), use_container_width=True)
+        
+    with colB:
+        st.markdown("#### Missing Values Check")
+        missing_data = df.isnull().sum()
+        if missing_data.sum() == 0:
+            st.success("✅ Clean Data: No missing values found in the dataset! Perfect!")
+        else:
+            st.write(missing_data[missing_data > 0])
 
 
 st.divider()
@@ -105,52 +237,60 @@ st.divider()
 # ==============================================================================
 # SYSTEM 1: COVID TREND ANALYSIS DASHBOARD
 # ==============================================================================
-if selected_option == "1. COVID Trend Analysis Dashboard":
-    st.header("📈 System 1: COVID Trend Analysis & EDA")
-    st.markdown("<div class='info-box'>This section uses Exploratory Data Analysis (EDA) and Principal Component Analysis (PCA) to find trends and visualize the underlying structure of the pandemic data.</div>", unsafe_allow_html=True)
-    
+st.header("📈 System 1: COVID Trend Analysis & EDA", anchor="sys1")
+with st.expander("Expand System 1: Exploratory Data Analysis", expanded=True):
+    st.markdown("<div class='info-box'><b>Insight:</b> This section uses EDA and Principal Component Analysis (PCA) to find trends and visualize the underlying structure of the pandemic data globally.</div>", unsafe_allow_html=True)
+
     st.subheader("Correlation Heatmap")
-    fig_corr, ax_corr = plt.subplots(figsize=(10, 8))
+    fig_corr, ax_corr = plt.subplots(figsize=(10, 6))
     numeric_df = df.select_dtypes(include=[np.number])
-    sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', fmt=".2f", ax=ax_corr)
+    # Use dark palette for premium syntax
+    sns.heatmap(numeric_df.corr(), annot=True, cmap='mako', fmt=".2f", ax=ax_corr, 
+                linewidths=0.5, linecolor='black')
     st.pyplot(fig_corr)
-    
+
     st.subheader("Global Case Distributions")
     colA, colB = st.columns(2)
     with colA:
         fig_hist1, ax_hist1 = plt.subplots()
-        sns.histplot(df['Confirmed'], bins=30, kde=True, color='blue', ax=ax_hist1)
-        ax_hist1.set_title("Distribution of Confirmed Cases")
+        sns.histplot(df['Confirmed'], bins=30, kde=True, color='#00f2fe', ax=ax_hist1)
+        ax_hist1.set_title("Distribution of Confirmed Cases", color="white")
         st.pyplot(fig_hist1)
     with colB:
         fig_hist2, ax_hist2 = plt.subplots()
-        sns.histplot(df['Deaths'], bins=30, kde=True, color='red', ax=ax_hist2)
-        ax_hist2.set_title("Distribution of Deaths")
+        sns.histplot(df['Deaths'], bins=30, kde=True, color='#f5576c', ax=ax_hist2)
+        ax_hist2.set_title("Distribution of Deaths", color="white")
         st.pyplot(fig_hist2)
 
     st.subheader("PCA: 2D Spatial Reduction")
-    st.write("We compress multi-dimensional features (Cases, Deaths, Recovered, Active) into two principal components to easily visualize clusters on a 2D plot.")
+    st.write("Compressing multi-dimensional features into two principal components to easily visualize WHO Region clusters on a 2D space.")
     features_pca = ['Confirmed', 'Deaths', 'Recovered', 'Active']
     X_pca = df[features_pca]
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X_pca)
     pca = PCA(n_components=2)
     X_pca_2d = pca.fit_transform(X_scaled)
-    
+
     fig_pca, ax_pca = plt.subplots(figsize=(10, 6))
-    sns.scatterplot(x=X_pca_2d[:, 0], y=X_pca_2d[:, 1], hue=df['WHO Region'], s=100, alpha=0.8, ax=ax_pca)
-    ax_pca.set_title("PCA 2D Visualization by WHO Region")
+    sns.scatterplot(x=X_pca_2d[:, 0], y=X_pca_2d[:, 1], hue=df['WHO Region'], palette='Set2', s=120, alpha=0.9, edgecolor='w', linewidth="0.5", ax=ax_pca)
+    ax_pca.set_title("PCA 2D Visualization by WHO Region", color="white", size=14)
     ax_pca.set_xlabel("Principal Component 1")
     ax_pca.set_ylabel("Principal Component 2")
+    
+    # Legend styling
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., frameon=False)
     st.pyplot(fig_pca)
+
+st.divider()
+
 
 # ==============================================================================
 # SYSTEM 2: SEVERITY PREDICTION SYSTEM
 # ==============================================================================
-elif selected_option == "2. Severity Prediction (Classification)":
-    st.header("🚦 System 2: COVID-19 Severity Prediction System")
-    st.markdown("<div class='info-box'><b>Goal:</b> Classify a country's pandemic severity into 'Low', 'Medium', or 'High' Risk based on the number of Active cases.<br><b>Models:</b> Logistic Regression, Decision Tree, Random Forest.</div>", unsafe_allow_html=True)
-    
+st.header("🚦 System 2: COVID-19 Severity Prediction System", anchor="sys2")
+with st.expander("Expand System 2: Classification Models", expanded=True):
+    st.markdown("<div class='info-box'><b>Goal:</b> Classify a country's pandemic severity into 'Low', 'Medium', or 'High' Risk based on the number of Active cases.<br><b>Models Deployed:</b> Logistic Regression, Decision Tree, Random Forest.</div>", unsafe_allow_html=True)
+
     def classify_severity(active_cases):
         if active_cases > 50000:
             return 'High Risk'
@@ -161,176 +301,186 @@ elif selected_option == "2. Severity Prediction (Classification)":
 
     df_sev = df.copy()
     df_sev['Risk_Level'] = df_sev['Active'].apply(classify_severity)
-    
-    st.subheader("Target Variable Generation")
-    fig_sev, ax_sev = plt.subplots(figsize=(8, 4))
-    sns.countplot(x='Risk_Level', data=df_sev, order=['Low Risk', 'Medium Risk', 'High Risk'], palette='viridis', ax=ax_sev)
-    ax_sev.set_title("Distribution of Risk Levels (Generated from Active Cases)")
-    st.pyplot(fig_sev)
-    
-    st.subheader("Model Training & Evaluation")
-    st.write("Using features: Confirmed, Deaths, Recovered, New cases, New deaths.")
-    
-    X_sev = df_sev[['Confirmed', 'Deaths', 'Recovered', 'New cases', 'New deaths']]
-    y_sev = df_sev['Risk_Level']
-    
-    le_risk = LabelEncoder()
-    y_sev_encoded = le_risk.fit_transform(y_sev)
-    X_train_sev, X_test_sev, y_train_sev, y_test_sev = train_test_split(X_sev, y_sev_encoded, test_size=0.2, random_state=42)
-    scaler_sev = StandardScaler()
-    X_train_sev_scaled = scaler_sev.fit_transform(X_train_sev)
-    X_test_sev_scaled = scaler_sev.transform(X_test_sev)
 
-    log_model = LogisticRegression(max_iter=1000, random_state=42)
-    log_model.fit(X_train_sev_scaled, y_train_sev)
-    acc_log_sev = accuracy_score(y_test_sev, log_model.predict(X_test_sev_scaled))
+    col1_v, col2_v = st.columns([1, 2])
+    with col1_v:
+        st.subheader("Target Distribution")
+        fig_sev, ax_sev = plt.subplots(figsize=(6, 5))
+        sns.countplot(x='Risk_Level', data=df_sev, order=['Low Risk', 'Medium Risk', 'High Risk'], palette='cool', ax=ax_sev)
+        ax_sev.set_title("Risk Levels Generated", color="white")
+        st.pyplot(fig_sev)
+        
+    with col2_v:
+        st.subheader("Model Training & Evaluation")
+        st.write("Using features: `Confirmed`, `Deaths`, `Recovered`, `New cases`, `New deaths`.")
 
-    dt_model_sev = DecisionTreeClassifier(random_state=42)
-    dt_model_sev.fit(X_train_sev_scaled, y_train_sev)
-    acc_dt_sev = accuracy_score(y_test_sev, dt_model_sev.predict(X_test_sev_scaled))
+        X_sev = df_sev[['Confirmed', 'Deaths', 'Recovered', 'New cases', 'New deaths']]
+        y_sev = df_sev['Risk_Level']
 
-    rf_model_sev = RandomForestClassifier(n_estimators=100, random_state=42)
-    rf_model_sev.fit(X_train_sev_scaled, y_train_sev)
-    pred_rf_sev = rf_model_sev.predict(X_test_sev_scaled)
-    acc_rf_sev = accuracy_score(y_test_sev, pred_rf_sev)
+        le_risk = LabelEncoder()
+        y_sev_encoded = le_risk.fit_transform(y_sev)
+        X_train_sev, X_test_sev, y_train_sev, y_test_sev = train_test_split(X_sev, y_sev_encoded, test_size=0.2, random_state=42)
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Logistic Regression Accuracy", f"{acc_log_sev*100:.2f}%")
-    col2.metric("Decision Tree Accuracy", f"{acc_dt_sev*100:.2f}%")
-    col3.metric("Random Forest Accuracy", f"{acc_rf_sev*100:.2f}%")
-    
-    st.subheader("Detailed Analysis: Random Forest")
-    colA, colB = st.columns(2)
-    with colA:
+        scaler_sev_ml = StandardScaler()
+        X_train_sev_scaled = scaler_sev_ml.fit_transform(X_train_sev)
+        X_test_sev_scaled = scaler_sev_ml.transform(X_test_sev)
+
+        # 1. Log Reg
+        log_model = LogisticRegression(max_iter=1000, random_state=42)
+        log_model.fit(X_train_sev_scaled, y_train_sev)
+        acc_log_sev = accuracy_score(y_test_sev, log_model.predict(X_test_sev_scaled))
+
+        # 2. DT
+        dt_model_sev = DecisionTreeClassifier(random_state=42)
+        dt_model_sev.fit(X_train_sev_scaled, y_train_sev)
+        acc_dt_sev = accuracy_score(y_test_sev, dt_model_sev.predict(X_test_sev_scaled))
+
+        # 3. RF
+        rf_model_sev = RandomForestClassifier(n_estimators=100, random_state=42)
+        rf_model_sev.fit(X_train_sev_scaled, y_train_sev)
+        pred_rf_sev = rf_model_sev.predict(X_test_sev_scaled)
+        acc_rf_sev = accuracy_score(y_test_sev, pred_rf_sev)
+
+        col1_s, col2_s, col3_s = st.columns(3)
+        col1_s.metric("Logistic Regression", f"{acc_log_sev*100:.1f}%")
+        col2_s.metric("Decision Tree", f"{acc_dt_sev*100:.1f}%")
+        col3_s.metric("Random Forest", f"{acc_rf_sev*100:.1f}%")
+
+    st.subheader("Zoom In: Random Forest Performance")
+    colA_s, colB_s = st.columns(2)
+    with colA_s:
         st.write("Classification Report")
         report_dict = classification_report(y_test_sev, pred_rf_sev, target_names=le_risk.classes_, output_dict=True)
-        st.dataframe(pd.DataFrame(report_dict).transpose())
-    
-    with colB:
+        st.dataframe(pd.DataFrame(report_dict).transpose().style.background_gradient(cmap='Blues'), use_container_width=True)
+
+    with colB_s:
         st.write("Confusion Matrix")
-        fig_cm, ax_cm = plt.subplots()
+        fig_cm, ax_cm = plt.subplots(figsize=(6,4))
         cm_rf = confusion_matrix(y_test_sev, pred_rf_sev)
-        sns.heatmap(cm_rf, annot=True, cmap='Blues', fmt='d', xticklabels=le_risk.classes_, yticklabels=le_risk.classes_, ax=ax_cm)
-        ax_cm.set_ylabel('Actual')
-        ax_cm.set_xlabel('Predicted')
+        sns.heatmap(cm_rf, annot=True, cmap='rocket', fmt='d', xticklabels=le_risk.classes_, yticklabels=le_risk.classes_, ax=ax_cm)
+        ax_cm.set_ylabel('Actual', color='white')
+        ax_cm.set_xlabel('Predicted', color='white')
         st.pyplot(fig_cm)
 
+
+st.divider()
 
 # ==============================================================================
 # SYSTEM 3: DEATH RATE PREDICTION SYSTEM
 # ==============================================================================
-elif selected_option == "3. Death Rate Prediction (Regression)":
-    st.header("📉 System 3: Death Rate Prediction System")
-    st.markdown("<div class='info-box'><b>Goal:</b> Use Linear Regression to predict the complex continuous target: 'Deaths / 100 Cases' (Death Percentage).<br><b>Features Used:</b> Confirmed cases, Active cases, and WHO Region.</div>", unsafe_allow_html=True)
-    
+st.header("📉 System 3: Death Rate Prediction System", anchor="sys3")
+with st.expander("Expand System 3: Regression Algorithms", expanded=True):
+    st.markdown("<div class='info-box'><b>Goal:</b> Use Linear Regression to predict the complex continuous target: <i>'Deaths / 100 Cases' (Death Percentage)</i>.<br><b>Features Used:</b> Confirmed cases, Active cases, and WHO Region.</div>", unsafe_allow_html=True)
+
     df_reg = df.copy()
     le_region = LabelEncoder()
     df_reg['WHO Region Encoded'] = le_region.fit_transform(df_reg['WHO Region'])
-    
+
     X_reg = df_reg[['Confirmed', 'Active', 'WHO Region Encoded']]
     y_reg = df_reg['Deaths / 100 Cases']
-    
+
     X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.2, random_state=42)
     scaler_reg = StandardScaler()
     X_train_reg_scaled = scaler_reg.fit_transform(X_train_reg)
     X_test_reg_scaled = scaler_reg.transform(X_test_reg)
-    
+
     lr_model = LinearRegression()
     lr_model.fit(X_train_reg_scaled, y_train_reg)
     y_pred_reg = lr_model.predict(X_test_reg_scaled)
-    
-    st.subheader("Model Evaluation")
-    mse = mean_squared_error(y_test_reg, y_pred_reg)
-    r2 = r2_score(y_test_reg, y_pred_reg)
-    
-    col1, col2 = st.columns(2)
-    col1.metric("Mean Squared Error (MSE)", f"{mse:.4f}")
-    col2.metric("R-squared Score (R2)", f"{r2:.4f}")
-    
-    st.subheader("Actual vs Predicted Fit Plot")
-    fig_fit, ax_fit = plt.subplots(figsize=(8, 5))
-    ax_fit.scatter(y_test_reg, y_pred_reg, alpha=0.7, color='purple')
-    ax_fit.plot([y_test_reg.min(), y_test_reg.max()], [y_test_reg.min(), y_test_reg.max()], color='red', lw=2, linestyle='--')
-    ax_fit.set_xlabel("Actual Death Rate (%)")
-    ax_fit.set_ylabel("Predicted Death Rate (%)")
-    ax_fit.set_title("Linear Regression: Actual vs Predicted")
-    st.pyplot(fig_fit)
 
+    col1_r, col2_r = st.columns(2)
+    with col1_r:
+        st.subheader("Model Validation")
+        mse = mean_squared_error(y_test_reg, y_pred_reg)
+        r2 = r2_score(y_test_reg, y_pred_reg)
+        
+        st.metric("Mean Squared Error (MSE)", f"{mse:.4f}")
+        st.metric("R-squared Score (R2)", f"{r2:.4f}")
+        st.write("*(Note: Low R2 suggests death rate relies on more nuanced factors globally than just confirmed/active cases)*")
+
+    with col2_r:
+        st.subheader("Linear Regression Fit Visualization")
+        fig_fit, ax_fit = plt.subplots(figsize=(8, 5))
+        ax_fit.scatter(y_test_reg, y_pred_reg, alpha=0.8, color='#00f2fe', edgecolor='k', s=80)
+        ax_fit.plot([y_test_reg.min(), y_test_reg.max()], [y_test_reg.min(), y_test_reg.max()], color='#f5576c', lw=3, linestyle='--')
+        ax_fit.set_xlabel("Actual Death Rate (%)", color='white')
+        ax_fit.set_ylabel("Predicted Death Rate (%)", color='white')
+        ax_fit.set_title("Actual vs Predicted Fit", color='white')
+        ax_fit.grid(True, linestyle=":", alpha=0.3)
+        st.pyplot(fig_fit)
+
+
+st.divider()
 
 # ==============================================================================
 # SYSTEM 4: WHO REGION CLASSIFICATION
 # ==============================================================================
-elif selected_option == "4. WHO Region Classification":
-    st.header("🌍 System 4: WHO Region Classification System")
-    st.markdown("<div class='info-box'><b>Goal:</b> Try to classify the geographical WHO Region of a country strictly by looking at its COVID-19 numbers (Confirmed, Deaths, Recovered, Active).<br><b>Observation:</b> This is challenging due to the small dataset size (187 countries spread across many regions).</div>", unsafe_allow_html=True)
-    
+st.header("🌍 System 4: WHO Region Classification System", anchor="sys4")
+with st.expander("Expand System 4: WHO Region Prediction", expanded=True):
+    st.markdown("<div class='info-box'><b>Goal:</b> Attempt to classify the geographical WHO Region of a country strictly by its COVID-19 numbers.<br><b>Observation:</b> Highly challenging due to small dataset size (187 countries spread thinly across many regions).</div>", unsafe_allow_html=True)
+
     X_who = df[['Confirmed', 'Deaths', 'Recovered', 'Active']]
     y_who = df['WHO Region']
-    
+
     X_train_who, X_test_who, y_train_who, y_test_who = train_test_split(X_who, y_who, test_size=0.2, random_state=42)
-    
+
     dt_who = DecisionTreeClassifier(random_state=42)
     dt_who.fit(X_train_who, y_train_who)
     pred_dt_who = dt_who.predict(X_test_who)
     acc_dt_who = accuracy_score(y_test_who, pred_dt_who)
-    
+
     rf_who = RandomForestClassifier(n_estimators=100, random_state=42)
     rf_who.fit(X_train_who, y_train_who)
     pred_rf_who = rf_who.predict(X_test_who)
     acc_rf_who = accuracy_score(y_test_who, pred_rf_who)
-    
-    st.subheader("Classification Accuracies")
-    col1, col2 = st.columns(2)
-    col1.metric("Decision Tree Accuracy", f"{acc_dt_who*100:.2f}%")
-    col2.metric("Random Forest Accuracy", f"{acc_rf_who*100:.2f}%")
-    
-    st.subheader("Classification Report (Random Forest)")
-    report_dict_who = classification_report(y_test_who, pred_rf_who, zero_division=0, output_dict=True)
-    st.dataframe(pd.DataFrame(report_dict_who).transpose())
 
+    col1_w, col2_w = st.columns(2)
+    with col1_w:
+        st.subheader("Test Method Accuracies")
+        st.metric("Decision Tree Accuracy", f"{acc_dt_who*100:.2f}%")
+        st.metric("Random Forest Accuracy", f"{acc_rf_who*100:.2f}%")
+
+    with col2_w:
+        st.subheader("Classification Reality Matrix (Random Forest)")
+        report_dict_who = classification_report(y_test_who, pred_rf_who, zero_division=0, output_dict=True)
+        st.dataframe(pd.DataFrame(report_dict_who).transpose(), use_container_width=True)
+
+
+st.divider()
 
 # ==============================================================================
 # SYSTEM 5: FINAL MODEL COMPARISON
 # ==============================================================================
-elif selected_option == "5. Final Model Comparison":
-    st.header("🏆 System 5: Comprehensive Model Comparison")
-    st.markdown("<div class='info-box'><b>Goal:</b> Compare the accuracies of our Machine Learning models developed in the Severity Prediction task (System 2) to ascertain the best algorithm for this dataset.</div>", unsafe_allow_html=True)
-    
-    # Needs to recalculate accs since we didn't cache them globally
-    df_sev2 = df.copy()
-    def cl_sev(active):
-        if active > 50000: return 'High Risk'
-        elif active > 10000: return 'Medium Risk'
-        return 'Low Risk'
-    df_sev2['Risk'] = df_sev2['Active'].apply(cl_sev)
-    
-    X2 = df_sev2[['Confirmed', 'Deaths', 'Recovered', 'New cases', 'New deaths']]
-    y2 = LabelEncoder().fit_transform(df_sev2['Risk'])
-    
-    X_train2, X_test2, y_train2, y_test2 = train_test_split(X2, y2, test_size=0.2, random_state=42)
-    scaler2 = StandardScaler()
-    Xt2 = scaler2.fit_transform(X_train2)
-    Xts2 = scaler2.transform(X_test2)
-    
-    acc_l = accuracy_score(y_test2, LogisticRegression(max_iter=1000).fit(Xt2, y_train2).predict(Xts2))
-    acc_d = accuracy_score(y_test2, DecisionTreeClassifier(random_state=42).fit(Xt2, y_train2).predict(Xts2))
-    acc_r = accuracy_score(y_test2, RandomForestClassifier(random_state=42).fit(Xt2, y_train2).predict(Xts2))
-    
+st.header("🏆 System 5: Comprehensive Model Comparison", anchor="sys5")
+with st.expander("Expand System 5: Champion Evaluation", expanded=True):
+    st.markdown("<div class='info-box'><b>Core Objective:</b> Compare accuracies across Machine Learning models tested earlier. Ascertain the champion algorithm for this dataset.</div>", unsafe_allow_html=True)
+
     models = ['Logistic Regression', 'Decision Tree', 'Random Forest']
-    accuracies = [acc_l, acc_d, acc_r]
+    accuracies = [acc_log_sev, acc_dt_sev, acc_rf_sev]
+
+    st.subheader("Model Validation Accuracy Trophy Chart")
+    fig_comp, ax_comp = plt.subplots(figsize=(10, 5))
     
-    st.subheader("Model Validation Accuracy Chart")
-    fig_comp, ax_comp = plt.subplots(figsize=(9, 5))
-    bars = sns.barplot(x=models, y=accuracies, palette='magma', ax=ax_comp)
+    # Custom colors
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
+    bars = sns.barplot(x=models, y=accuracies, palette='viridis', ax=ax_comp, edgecolor='white', linewidth=2)
+    
     ax_comp.set_ylim(0, 1.1)
-    ax_comp.set_ylabel("Accuracy Score")
+    ax_comp.set_ylabel("Accuracy Score", color="white")
     
+    # Customize grid
+    ax_comp.grid(axis='y', linestyle='--', alpha=0.3)
+
     for i, v in enumerate(accuracies):
-        ax_comp.text(i, v + 0.02, f"{v:.3f}", ha='center', fontweight='bold', fontsize=12)
+        ax_comp.text(i, v + 0.03, f"{v*100:.1f}%", ha='center', fontweight='bold', fontsize=14, color='white')
         
     st.pyplot(fig_comp)
-    
+
     best_acc = max(accuracies)
     idx = accuracies.index(best_acc)
-    
-    st.success(f"**Conclusion:** The absolute best performing model across all testing was the **{models[idx]}** scoring **{best_acc*100:.2f}%** validation accuracy.")
+
+    st.markdown(f"""
+    <div style='background: linear-gradient(90deg, #11998e, #38ef7d); padding: 20px; border-radius: 12px; font-size: 1.3rem; text-align: center; color: white; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.2);'>
+        🚀 Conclusion: The absolute champion model across all testing was the {models[idx]} scoring {best_acc*100:.2f}% accuracy.
+    </div>
+    """, unsafe_allow_html=True)
