@@ -280,7 +280,7 @@ st.divider()
 # ==============================================================================
 st.header("📈 System 1: COVID Trend Analysis & EDA", anchor="sys1")
 with st.expander("Expand System 1: Exploratory Data Analysis", expanded=True):
-    st.markdown("<div class='info-box'><b>Insight:</b> This section uses EDA and Principal Component Analysis (PCA) to find trends and visualize the underlying structure of the pandemic data globally.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'><b>Goal:</b> Find trends and visualize the underlying structure of the pandemic data globally.<br><br><b>🧠 ML Operation Used:</b> Principal Component Analysis (PCA) - Unsupervised Dimensionality Reduction.<br><b>💡 Why it's used:</b> PCA compresses multi-dimensional data into fewer principal components (2D space) while retaining the most variance, allowing us to visualize complex relationships easily.<br><b>🌍 Real-world Uses:</b> Image compression, exploratory data visualization, and noise filtering.</div>", unsafe_allow_html=True)
 
     st.subheader("Correlation Heatmap")
     fig_corr, ax_corr = plt.subplots(figsize=(10, 6))
@@ -330,7 +330,7 @@ st.divider()
 # ==============================================================================
 st.header("🚦 System 2: COVID-19 Severity Prediction System", anchor="sys2")
 with st.expander("Expand System 2: Classification Models", expanded=True):
-    st.markdown("<div class='info-box'><b>Goal:</b> Classify a country's pandemic severity into 'Low', 'Medium', or 'High' Risk based on the number of Active cases.<br><b>Models Deployed:</b> Logistic Regression, Decision Tree, Random Forest.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'><b>Goal:</b> Classify pandemic severity into 'Low', 'Medium', or 'High' Risk.<br><br><b>🧠 ML Operation Used:</b> Multi-class Classification (Supervised Learning) via Logistic Regression, Decision Tree, & Random Forest.<br><b>💡 Why it's used:</b> We have labeled discrete risk categories and want the model to learn the boundaries between them based on numerical infection metrics.<br><b>🌍 Real-world Uses:</b> Medical disease diagnosis, spam email filtering, and sentiment analysis.</div>", unsafe_allow_html=True)
 
     def classify_severity(active_cases):
         if active_cases > 50000:
@@ -411,7 +411,7 @@ st.divider()
 # ==============================================================================
 st.header("📉 System 3: Death Rate Prediction System", anchor="sys3")
 with st.expander("Expand System 3: Regression Algorithms", expanded=True):
-    st.markdown("<div class='info-box'><b>Goal:</b> Use Linear Regression to predict the complex continuous target: <i>'Deaths / 100 Cases' (Death Percentage)</i>.<br><b>Features Used:</b> Confirmed cases, Active cases, and WHO Region.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'><b>Goal:</b> Predict a continuous target metric like <i>'Deaths / 100 Cases'</i> based on case features.<br><br><b>🧠 ML Operation Used:</b> Linear Regression (Supervised Learning).<br><b>💡 Why it's used:</b> Regression is the standard approach for modeling the linear relationship between independent variables and forecasting a continuous numeric outcome.<br><b>🌍 Real-world Uses:</b> Predicting housing prices, sales forecasting, and financial risk estimation.</div>", unsafe_allow_html=True)
 
     df_reg = df.copy()
     le_region = LabelEncoder()
@@ -458,7 +458,7 @@ st.divider()
 # ==============================================================================
 st.header("🌍 System 4: WHO Region Classification System", anchor="sys4")
 with st.expander("Expand System 4: WHO Region Prediction", expanded=True):
-    st.markdown("<div class='info-box'><b>Goal:</b> Attempt to classify the geographical WHO Region of a country strictly by its COVID-19 numbers.<br><b>Observation:</b> Highly challenging due to small dataset size (187 countries spread thinly across many regions).</div>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'><b>Goal:</b> Predict the geographical WHO Region of a country based purely on its COVID-19 statistical footprint.<br><br><b>🧠 ML Operation Used:</b> Ensemble & Tree-based Classification.<br><b>💡 Why it's used:</b> Trees can handle non-linear data and find complex thresholds or splits in the data that might uniquely identify specific global region patterns.<br><b>🌍 Real-world Uses:</b> Customer market segmentation, fraud detection, and recommendation systems.</div>", unsafe_allow_html=True)
 
     X_who = df[['Confirmed', 'Deaths', 'Recovered', 'Active']]
     y_who = df['WHO Region']
@@ -494,7 +494,7 @@ st.divider()
 # ==============================================================================
 st.header("🏆 System 5: Comprehensive Model Comparison", anchor="sys5")
 with st.expander("Expand System 5: Champion Evaluation", expanded=True):
-    st.markdown("<div class='info-box'><b>Core Objective:</b> Compare accuracies across Machine Learning models tested earlier. Ascertain the champion algorithm for this dataset.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'><b>Core Objective:</b> Ascertain the champion algorithm by comparing cross-model accuracies.<br><br><b>🧠 ML Operation Used:</b> Model Evaluation & Validation Metrics.<br><b>💡 Why it's used:</b> No single algorithm works best universally (No Free Lunch theorem). Evaluation quantifies accuracy so we select the most reliable predictor.<br><b>🌍 Real-world Uses:</b> A/B testing models in production, automated hyperparameter tuning, and reducing algorithmic bias.</div>", unsafe_allow_html=True)
 
     models = ['Logistic Regression', 'Decision Tree', 'Random Forest']
     accuracies = [acc_log_sev, acc_dt_sev, acc_rf_sev]
