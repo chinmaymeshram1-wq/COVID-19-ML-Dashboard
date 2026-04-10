@@ -31,11 +31,20 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
     
-    * {
+    /* Apply font safely without breaking Material icon ligatures */
+    h1, h2, h3, h4, h5, h6, .main-title, [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {
         font-family: 'Outfit', sans-serif !important;
     }
+    
+    p, li, label, .stMarkdown {
+        font-family: 'Outfit', sans-serif;
+    }
 
-    /* Animated Dynamic Gradient Background */
+    h1, h2, h3, h4, h5, h6, p, li, label, span, .stMarkdown, .info-box {
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0,0,0,0.5); /* Needed so text is readable over white background */
+    }
+
+    /* Animated Dynamic Gradient Background - White & Black Theme */
     @keyframes gradientBG {
         0% {background-position: 0% 50%;}
         50% {background-position: 100% 50%;}
@@ -43,10 +52,10 @@ st.markdown("""
     }
     
     .stApp {
-        background: linear-gradient(-45deg, #091221, #0f2027, #203a43, #152836);
+        background: linear-gradient(-45deg, #000000, #333333, #ffffff, #0a0a0a);
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
-        color: #e0e0e0;
+        color: #ffffff;
     }
     
     /* Main Title Styling */
@@ -55,8 +64,8 @@ st.markdown("""
         font-weight: 800;
         text-align: center;
         margin-bottom: 2rem;
-        text-shadow: 3px 3px 6px rgba(0,0,0,0.6);
-        background: -webkit-linear-gradient(45deg, #4facfe, #00f2fe, #f093fb, #f5576c);
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.3);
+        background: -webkit-linear-gradient(45deg, #ffffff, #888888, #aaaaaa, #ffffff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: fadeInDown 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -97,26 +106,58 @@ st.markdown("""
         border-right: 1px solid rgba(255, 255, 255, 0.05);
     }
     
-    /* Auto-scroll links */
-    a {
-        text-decoration: none;
-        color: #4facfe;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: block;
+    /* Professional Transparent Pill Navigation */
+    [data-testid="stSidebar"] ul {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
     
-    a:hover {
-        color: #f093fb;
-        transform: translateX(5px);
+    [data-testid="stSidebar"] li {
+        margin-bottom: 12px;
+    }
+    
+    [data-testid="stSidebar"] a {
+        text-decoration: none !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 1.05rem;
+        display: block;
+        padding: 12px 20px;
+        border-radius: 30px; /* Circular professional pill */
+        background: rgba(40, 40, 40, 0.8); /* Dark Glassmorphism */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        position: relative;
+        overflow: hidden;
+        text-shadow: none !important; /* Keep links clean */
+    }
+    
+    [data-testid="stSidebar"] a:hover {
+        background: linear-gradient(90deg, #ffffff, #d4d4d4);
+        color: #000000 !important;
+        transform: translateX(8px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.5);
+        border-color: transparent;
+    }
+
+    /* Click click animation with circle effect */
+    [data-testid="stSidebar"] a:active {
+        transform: translateX(4px) scale(0.92);
+        border-radius: 50px;
+        background: radial-gradient(circle, #ffffff 0%, #888888 100%);
+        color: #000000 !important;
+        box-shadow: 0 0 25px rgba(255,255,255,0.9);
+        transition: all 0.1s ease;
     }
 
     /* Metric Cards Styling */
     [data-testid="stMetricValue"] {
-        color: #00f2fe !important;
+        color: #ffffff !important;
         font-size: 2.5rem;
         font-weight: 800;
-        text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         animation: pulse 2s infinite alternate;
     }
     
@@ -128,8 +169,8 @@ st.markdown("""
     }
     
     @keyframes pulse {
-        from { text-shadow: 0 0 10px rgba(0,242,254,0.2); }
-        to { text-shadow: 0 0 20px rgba(0,242,254,0.6), 0 0 30px rgba(0,242,254,0.4); }
+        from { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        to { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5); }
     }
 
     /* Streamlit Expander overrides & animations */
